@@ -139,7 +139,7 @@ method new ($class: $value) {
 
 =method $class->inflate_value($value)
 
-Does the actual work of L<new>, also used when inflating values for
+Does the actual work of L<$class-E<gt>new($value)>, also used when inflating values for
 L<DBIx::Class::InflateColumn::ClassTypeEnum>.
 
 =cut
@@ -194,7 +194,7 @@ method get_test ($class:) {
 
 =method $class->test($value)
 
-A helper for directly using L<get_test>.
+A helper for directly using L<$class-E<gt>get_test>.
 
   Toast::Status->test('deleted')   # throws an exception
 
@@ -207,7 +207,9 @@ method test ($class: $value) {
 
 =method $class->get_coerce
 
-Returns a function which returns an enum if given an enum, or tries to create an enum from the given value using L<new>.
+Returns a function which returns an enum if given an enum, or tries to create an enum from the given value using L<$class-E<gt>new($value)>.
+
+TODO: test and coerce don't work with ordinals
 
 =cut
 
@@ -229,7 +231,7 @@ An exception is thrown if an invalid test value is given.
 
 =method $o->is_$value
 
-Shortcut for L<$o->is($value)>
+Shortcut for L<$o-E<gt>is($value)>
 
 =cut
 
@@ -261,7 +263,7 @@ method numify {
 
 =method $o->any(@cases)
 
-True if C<$o->is(..)> for any of the given cases.
+True if C<$o-E<gt>is(..)> for any of the given cases.
 
 =cut
 
@@ -271,12 +273,22 @@ method any (@cases) {
 
 =method $o->none(@cases)
 
-True if C<$o->is(..)> for none of the given cases.
+True if C<$o-E<gt>is(..)> for none of the given cases.
 
 =cut
 
 method none (@cases) {
   List::Util::none { $self->is($_) } @cases;
 }
+
+=head1 SEE ALSO
+
+=for :list
+* L<Object::Enum>
+* L<Class::Enum>
+* L<Enumeration>
+
+=cut
+
 
 1;

@@ -94,4 +94,12 @@ method register_column ($column, $info) {
   }
 }
 
+=head1 SEE ALSO
+
+=for :list
+* L<Class::Type::Enum>
+* L<DBIx::Class::InflateColumn::Object::Enum>
+
+=cut
+
 1;
