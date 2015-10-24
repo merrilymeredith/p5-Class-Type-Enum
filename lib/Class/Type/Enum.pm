@@ -40,12 +40,12 @@ method import ($class: %params) {
     no strict 'refs';
     push @{"${target}::ISA"}, $class;
   }
-  install_modifier $target, 'fresh', values_raw => sub { \%values };
-  install_modifier $target, 'fresh', raw_values => sub { +{ reverse(%values) } };
+  install_modifier $target, 'fresh', values_ord => sub { \%values };
+  install_modifier $target, 'fresh', ord_values => sub { +{ reverse(%values) } };
 
   install_modifier $target, 'fresh', values => method {
-    my $raw = $self->values_raw;
-    [ sort { $raw->{$a} <=> $raw->{$b} } keys %values ];
+    my $ord = $self->values_ord;
+    [ sort { $ord->{$a} <=> $ord->{$b} } keys %values ];
   };
 
   for my $value (keys %values) {
@@ -59,14 +59,14 @@ method new ($class: $value) {
 
 method inflate ($class: $value) {
   bless \(
-    $class->values_raw->{$value}
+    $class->values_ord->{$value}
     // die "Value [$value] is not valid for enum $class"
   ), $class;
 }
 
 method get_test ($class:) {
   return fun ($value) {
-    exists($class->values_raw->{$value})
+    exists($class->values_ord->{$value})
       or die "Value [$value] is not valid for enum $class"
   }
 }
@@ -77,11 +77,11 @@ method test ($class: $value) {
 
 
 method is ($value) {
-  $$self == ($self->values_raw->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
+  $$self == ($self->values_ord->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
 }
 
 method stringify {
-  $self->raw_values->{$$self};
+  $self->ord_values->{$$self};
 }
 
 method numify {
