@@ -1,22 +1,23 @@
 package Role::Enum;
 
-use Moo::Role;
-use MooX::Role::Parameterized qw(role apply);
+use strict;
+use warnings;
 
 use Function::Parameters ':strict';
 use Scalar::Util qw(blessed);
-use Class::Method::Modifiers qw(fresh);
+use Class::Method::Modifiers qw(install_modifier);
 
 use namespace::clean;
 
 use overload (
-  '""' => 'stringify',
-  '0+' => 'numify',
+  '""'     => 'stringify',
+  '0+'     => 'numify',
   fallback => 1,
 );
 
-role(fun ($params) {
-  my %params = %$params;
+method import ($class: %params) {
+  my $target = caller;
+
   my %values;
 
   if (ref $params{values} eq 'ARRAY') {
@@ -33,23 +34,22 @@ role(fun ($params) {
     die "Enum values must be provided either as an array or hash ref.";
   }
 
-  fresh values_raw => sub { \%values };
-  fresh raw_values => sub { +{ reverse(%values) } };
+  ## the bits that are installed into the target class, plus @ISA
+  {
+    no strict 'refs';
+    push @{"${target}::ISA"}, $class;
+  }
+  install_modifier $target, 'fresh', values_raw => sub { \%values };
+  install_modifier $target, 'fresh', raw_values => sub { +{ reverse(%values) } };
 
-  fresh values => method {
+  install_modifier $target, 'fresh', values => method {
     my $raw = $self->values_raw;
     [ sort { $raw->{$a} <=> $raw->{$b} } keys %values ];
   };
 
-
   for my $value (keys %values) {
-    fresh "is_$value" => method { $self->is($value) };
+    install_modifier $target, 'fresh', "is_$value" => method { $self->is($value) };
   }
-});
-
-
-method import ($class: @params) {
-  apply($class, {@params}, target => scalar(caller));
 }
 
 method new ($class: $value) {
