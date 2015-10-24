@@ -1,10 +1,54 @@
 package DBIx::Class::InflateColumn::ClassTypeEnum;
+# ABSTRACT: Inflate enum-like columns to your Class::Type::Enum classes
+
+=head1 SYNOPSIS
+
+  package My::Schema::Result::Toast {
+    __PACKAGE__->load_components(qw/ InflateColumn::ClassTypeEnum Core /);
+
+    # Assuming Toast::Status is one of your enum classes...
+
+    use Toast::Status;  # Ensure it is loaded.
+
+    __PACKAGE__->add_columns(
+      status => {
+        data_type => 'varchar',
+        extra     => {
+          enum_class => 'Toast::Status',
+        },
+      }
+    );
+  }
+
+=head1 DESCRIPTION
+
+Inflate DBIC columns into instances of your L<Class::Type::Enum> classes.  The
+storage C<data_type> doesn't matter here, only whether or not enums should
+inflate/deflate to symbols (strings) or ordinals (integers).
+
+=cut
 
 use warnings;
 use strict;
 
 use Function::Parameters;
 use Carp ();
+
+=method register_column($column, $info)
+
+This method chains with L<DBIx::Class::Row/register_column> and checks for two
+subkeys inside the C<extra> key of the column info:
+
+=for :list
+= enum_class
+Required to enable column inflation.  Specify the complete class name that this
+column should be inflated to.  It should already be loaded and must be a
+subclass of L<Class::Type::Enum>.
+= enum_is_ord
+If true, the column is inflated from and deflated to ordinal values.
+
+=cut
+
 
 method register_column ($column, $info) {
   $self->next::method(@_);

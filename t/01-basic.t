@@ -12,7 +12,6 @@ package Vehicle {
 # Just another compile check
 use DBIx::Class::InflateColumn::ClassTypeEnum;
 
-
 my $cat = new_ok( 'Critter', ['cat'] );
 
 isa_ok( $cat, 'Class::Type::Enum' );
@@ -53,6 +52,12 @@ subtest 'test function for type checks?' => sub {
 
   ok( !defined eval { Critter->test('snake') }, 'no snakes' );
 };
+
+ok( eval {
+  package Dummy { Critter->import(); }
+  1;
+}, 'Class::Type::Enum skips import when subclasses are used, or this would die.');
+
 
 done_testing;
 
