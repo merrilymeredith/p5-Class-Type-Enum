@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Function::Parameters ':strict';
+use List::Util ();
 use Scalar::Util qw(blessed);
 use Class::Method::Modifiers qw(install_modifier);
 
@@ -75,7 +76,6 @@ method test ($class: $value) {
 }
 
 
-
 method is ($value) {
   $$self == ($self->values_raw->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
 }
@@ -86,6 +86,15 @@ method stringify {
 
 method numify {
   $$self
+}
+
+
+method any (@cases) {
+  List::Util::any { $self->is($_) } @cases;
+}
+
+method none (@cases) {
+  List::Util::none { $self->is($_) } @cases;
 }
 
 1;

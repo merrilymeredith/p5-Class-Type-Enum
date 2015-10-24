@@ -37,6 +37,9 @@ ok( Critter->new('mouse') < $cat, 'these fierce predators' );
 
 # Dwarn [ sort {$a <=> $b} map { Critter->new($_) } @{Critter->values} ];
 
+ok( $cat->any(qw(rabbit cat)), 'others could be tolerated' );
+ok( $cat->none(qw(dog mouse)), 'but we must keep standards' );
+
 subtest 'test function for type checks?' => sub {
   ok( my $test = Critter->get_test, 'got a test function' );
 
