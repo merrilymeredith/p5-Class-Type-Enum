@@ -54,14 +54,20 @@ method import ($class: %params) {
 }
 
 method new ($class: $value) {
-  $class->inflate($value);
+  $class->inflate_value($value);
 }
 
-method inflate ($class: $value) {
+method inflate_value ($class: $value) {
   bless {
     ord => $class->values_ord->{$value}
         // die "Value [$value] is not valid for enum $class"
   }, $class;
+}
+
+method inflate ($class: $ord) {
+  die "Ordinal $ord is not valid for enum $class"
+    if !exists $class->ord_values->{$ord};
+  bless { ord => $ord }, $class;
 }
 
 method get_test ($class:) {
