@@ -58,10 +58,10 @@ method new ($class: $value) {
 }
 
 method inflate ($class: $value) {
-  bless \(
-    $class->values_ord->{$value}
-    // die "Value [$value] is not valid for enum $class"
-  ), $class;
+  bless {
+    ord => $class->values_ord->{$value}
+        // die "Value [$value] is not valid for enum $class"
+  }, $class;
 }
 
 method get_test ($class:) {
@@ -77,15 +77,15 @@ method test ($class: $value) {
 
 
 method is ($value) {
-  $$self == ($self->values_ord->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
+  $self->{ord} == ($self->values_ord->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
 }
 
 method stringify {
-  $self->ord_values->{$$self};
+  $self->ord_values->{$self->{ord}};
 }
 
 method numify {
-  $$self
+  $self->{ord}
 }
 
 
