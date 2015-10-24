@@ -1,4 +1,4 @@
-package Role::Enum;
+package Class::Type::Enum;
 
 use strict;
 use warnings;
