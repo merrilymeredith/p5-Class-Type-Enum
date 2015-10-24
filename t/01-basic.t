@@ -4,7 +4,13 @@ package Critter {
   use Role::Enum values => [qw( mouse rabbit dog cat )];
 }
 
+package Vehicle {
+  use Role::Enum values => [qw(bike car bus train plane)];
+}
+
 my $cat = new_ok( 'Critter', ['cat'] );
+
+isa_ok( $cat, 'Role::Enum' );
 
 can_ok( $cat, qw( is is_mouse is_cat is_dog ) );
 
