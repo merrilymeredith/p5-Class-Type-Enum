@@ -1,0 +1,22 @@
+0.001 2015-10-25T02:37:03
+ - Add empty Changes (Meredith Howard)
+ - add stability / feedback note to pod (Meredith Howard)
+ - Mention DBIC again (Meredith Howard)
+ - Readme updates (Meredith Howard)
+ - Fix up some links, add see-also sections (Meredith Howard)
+ - Add docs! (Meredith Howard)
+ - Support inflate from ordinal (Meredith Howard)
+ - add .gitignore (Meredith Howard)
+ - Add dist.init and weaver.ini (Meredith Howard)
+ - Switch to a good ol' hashref, as DBIC doesn't try deflating scalar refs
+   (Meredith Howard)
+ - Update readme (Meredith Howard)
+ - Add DBIx::Class::InflateColumn::ClassTypeEnum.pm (Meredith Howard)
+ - use the term 'ord' for ordinal rather than 'raw' (Meredith Howard)
+ - Add any and none (Meredith Howard)
+ - Rename to Class::Type::Enum (Meredith Howard)
+ - Drop Moo::Role and ::Parameterized, install into the caller with C::M::M
+   (Meredith Howard)
+ - Test that we can use the role more than once (Meredith Howard)
+ - Add code, test, and a readme note (Meredith Howard)
+ - init (Meredith Howard)
