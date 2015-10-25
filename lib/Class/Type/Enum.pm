@@ -35,6 +35,8 @@ Class::Type::Enum is a class builder for type-like classes to represent your
 enumerated values.  In particular, it was built to scratch an itch with
 L<DBIx::Class> value inflation.
 
+I wouldn't consider the interface stable yet; I'd love feedback on this dist.
+
 When C<use>ing Class::Type::Enum:
 
 =begin :list
