@@ -2,10 +2,11 @@
 
 Class::Type::Enum is a class builder for type-like enumeration classes.
 
-It's a bit of an experiment that grew from liking [Object::Enum][objenum], but
-prefering something more akin to defining types, with traditional numeric
-backing values and sortability.  Object::Enum instances are all just instances
-of Object::Enum. I'd love to hear thoughts or advice.
+It's a bit of an experiment that grew from liking [Object::Enum][objenum] and
+using it with [DBIC][dbic], but prefering something more akin to defining
+types, with traditional numeric backing values and sortability.  Object::Enum
+instances are all just instances of Object::Enum. I'd love to hear thoughts or
+advice.
 
 [Object::Enum][objenum] works nicely for varchars with enum-like sets of
 values, but all enums you get out of it are instances of Object::Enum.
