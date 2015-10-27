@@ -44,6 +44,9 @@ ok( Critter->new('mouse') < $cat, 'these fierce predators' );
 ok( $cat->any(qw(rabbit cat)), 'others could be tolerated' );
 ok( $cat->none(qw(dog mouse)), 'but we must keep standards' );
 
+ok( my $dog = $cat->new('dog'), 'okay okay, made a dog' );
+cmp_ok( $dog, '!=', $cat, "they're just so different!" );
+
 subtest 'test function for type checks?' => sub {
   ok( my $test = Critter->get_test, 'got a test function' );
 

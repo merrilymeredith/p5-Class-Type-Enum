@@ -131,12 +131,12 @@ fun import ($class, %params) {
 =method $class->new($value)
 
 Your basic constructor, expects only a value corresponding to a symbol in the
-enum type.
+enum type.  Also works as an instance method for enums of the same class.
 
 =cut
 
 method new ($class: $value) {
-  $class->inflate_value($value);
+  (blessed($class)// $class)->inflate_value($value);
 }
 
 =method $class->inflate_value($value)
