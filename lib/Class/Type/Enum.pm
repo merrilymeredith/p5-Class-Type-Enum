@@ -71,7 +71,7 @@ use strict;
 use warnings;
 
 use Function::Parameters ':strict';
-use List::Util ();
+use List::Util v1.33 ();
 use Scalar::Util qw(blessed);
 use Class::Method::Modifiers qw(install_modifier);
 
