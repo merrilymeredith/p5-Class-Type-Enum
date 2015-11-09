@@ -46,18 +46,23 @@ When C<use>ing Class::Type::Enum:
 =for :list
 = values => [@symbols]
 The list of symbolic values in your enum, in ascending order if relevant.
-
-* Optional
-
-=for :list
-= init => $integer // 0
-If provided, the ordinal values of your enum will begin with the init value.
-= bits => $bool // !!0
-If true, each ordinal will be an increasing power of two, rather than
-increments.  That is, with this set, your enum's ordinal values will be 1, 2,
-4, 8, 16, ... which can be handy for bit fields.
-
+= values => {symbol => ordinal, ...}
+The list of symbols and ordinal values in your enum.  There is no check that a
+given ordinal isn't reused.
 =end :list
+
+=head2 Custom Ordinal Values
+
+If you'd like to build an enum that works like a bitfield or some other custom
+setup, you need only pass a more explicit hashref to Class::Type::Enum.
+
+  package BitField {
+    use Class::Type::Enum values => {
+      READ    => 1,
+      WRITE   => 2,
+      EXECUTE => 4,
+    };
+  }
 
 =cut
 
@@ -96,11 +101,9 @@ fun import ($class, %params) {
   my %values;
 
   if (ref $params{values} eq 'ARRAY') {
-    my $i = $params{init} // 0;
+    my $i = 0;
 
-    %values = map {
-      $_ => ($params{bits} ? 2**($i++) : $i++)
-    } @{$params{values}};
+    %values = map { $_ => $i++ } @{$params{values}};
   }
   elsif (ref $params{values} eq 'HASH') {
     %values = %{$params{values}};
