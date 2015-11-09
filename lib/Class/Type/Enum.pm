@@ -180,50 +180,69 @@ Returns a hashref keyed by ordinal, with symbols as values.
 
 =method $class->values
 
-Returns an arrayref of valid symbolic values in order.
+Returns an arrayref of valid symbolic values, in order.
 
-=method $class->get_test
+=method $class->test_symbol($value)
 
-Returns a function which either returns true if it's passed a valid value for
-the enum, or throws an exception.
+Test whether or not the given value is a valid symbol in this enum class.
 
 =cut
 
-method get_test ($class:) {
-  return fun ($value) {
-    exists($class->sym_to_ord->{$value})
-      or die "Value [$value] is not valid for enum $class"
-  }
+method test_symbol ($class: $value) {
+  exists($class->sym_to_ord->{$value})
 }
 
+=method $class->test_ordinal($value)
 
-=method $class->test($value)
-
-A helper for directly using L<$class-E<gt>get_test>.
-
-  Toast::Status->test('deleted')   # throws an exception
+Test whether or not the given value is a valid ordinal in this enum class.
 
 =cut
 
-method test ($class: $value) {
-  $class->get_test->($value)
+method test_ordinal ($class: $value) {
+  exists($class->ord_to_sym->{$value})
 }
 
+=method $class->coerce_symbol($value)
 
-=method $class->get_coerce
-
-Returns a function which returns an enum if given an enum, or tries to create an enum from the given value using L<$class-E<gt>new($value)>.
-
-TODO: test and coerce don't work with ordinals
+If the given value is already a $class, return it, otherwise try to inflate it
+as a symbol.  Dies on invalid value.
 
 =cut
 
-method get_coerce ($class:) {
-  return fun ($value) {
-    eval { $value->isa($class) }
-      ? $value
-      : $class->new($value);
+method coerce_symbol ($class: $value) {
+  return $value if eval { $value->isa($class) };
+
+  $class->inflate_symbol($value);
+}
+
+=method $class->coerce_ordinal($value)
+
+If the given value is already a $class, return it, otherwise try to inflate it
+as an ordinal.  Dies on invalid value.
+
+=cut
+
+method coerce_ordinal ($class: $value) {
+  return $value if eval { $value->isa($class) };
+
+  $class->inflate_ordinal($value);
+}
+
+=method $class->coerce_any($value)
+
+If the given value is already a $class, return it, otherwise try to inflate it
+first as an ordinal, then as a symbol.  Dies on invalid value.
+
+=cut
+
+method coerce_any ($class: $value) {
+  return $value if eval { $value->isa($class) };
+
+  for my $method (qw( inflate_ordinal inflate_symbol )) {
+    my $enum = eval { $class->$method($value) };
+    return $enum if $enum;
   }
+  die "Could not coerce invalid value [$value] into $class";
 }
 
 

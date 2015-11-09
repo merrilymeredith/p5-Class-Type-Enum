@@ -47,13 +47,36 @@ ok( $cat->none(qw(dog mouse)), 'but we must keep standards' );
 ok( my $dog = $cat->new('dog'), 'okay okay, made a dog' );
 cmp_ok( $dog, '!=', $cat, "they're just so different!" );
 
-subtest 'test function for type checks?' => sub {
-  ok( my $test = Critter->get_test, 'got a test function' );
 
-  ok( $test->('rabbit'), 'rabbit ok' );
-  ok( $test->($cat), 'cat ok' );
+subtest 'test methods for type checks' => sub {
+  ok( Critter->test_symbol('rabbit'), 'rabbit ok' );
+  ok( Critter->test_symbol($cat),     'cat ok' );
 
-  ok( !defined eval { Critter->test('snake') }, 'no snakes' );
+  ok( !Critter->test_symbol('snake'), 'no snakes' );
+
+  ok( Critter->test_ordinal(0),      'numouse ok' );
+  ok( Critter->test_ordinal(0+$cat), 'numcat ok');
+  ok( !Critter->test_ordinal(42),    'life meaningless' );
+};
+
+subtest 'coerce methods' => sub {
+  ok( Critter->coerce_symbol($cat), 'coerced cat, maybe' );
+  ok( Critter->coerce_symbol('rabbit'), 'coerced rabbit' );
+  ok( !defined eval {
+      Critter->coerce_symbol('snake') }, 'no legs, no service' );
+
+  ok( Critter->coerce_ordinal($cat), 'coerced cat, sure buddy' );
+  ok( Critter->coerce_ordinal(2),    'coerced dog' );
+  ok( !defined eval {
+      Critter->coerce_ordinal(21) }, 'blackjack' );
+
+  ok( Critter->coerce_any($cat),     'coerced cat, sure buddy' );
+  ok( Critter->coerce_any(2),        'coerced dog' );
+  ok( Critter->coerce_any('rabbit'), 'coerced dog' );
+  ok( !defined eval {
+      Critter->coerce_any('snake') },'cant take a hint' );
+  ok( !defined eval {
+      Critter->coerce_any(15) },     'learners permit' );
 };
 
 ok( eval {
