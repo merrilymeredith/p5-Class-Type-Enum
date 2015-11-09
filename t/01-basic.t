@@ -73,7 +73,7 @@ subtest 'coerce methods' => sub {
 
   ok( Critter->coerce_any($cat),     'coerced cat, sure buddy' );
   ok( Critter->coerce_any(2),        'coerced dog' );
-  ok( Critter->coerce_any('rabbit'), 'coerced dog' );
+  ok( Critter->coerce_any('rabbit'), 'coerced bunny' );
   ok( !defined eval {
       Critter->coerce_any('snake') },'cant take a hint' );
   ok( !defined eval {

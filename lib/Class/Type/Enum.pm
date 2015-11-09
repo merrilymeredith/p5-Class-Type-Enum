@@ -248,10 +248,9 @@ method coerce_any ($class: $value) {
 
 =method $o->is($value)
 
-Given a test value, returns true or false if the enum instance's value is equal
-to the test value.
+Given a test symbol, test that the enum instance's value is equivalent.
 
-An exception is thrown if an invalid test value is given.
+An exception is thrown if an invalid symbol is provided
 
 =method $o->is_$value
 
