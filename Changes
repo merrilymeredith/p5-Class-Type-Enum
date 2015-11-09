@@ -1,4 +1,19 @@
-0.001 2015-10-25T02:37:03
+0.002 2015-11-09T10:15:13
+ - Require List::Util min 1.33 (Meredith Howard)
+ - Clarify is() doc (Meredith Howard)
+ - Add more interface checks (Meredith Howard)
+ - Drop methods that return functions. Create test_{ordinal,symbol} and
+   coerce_{ordinal,symbol,any} (Meredith Howard)
+ - Rename inflate* to inflate_symbol and inflate_ordinal (Meredith Howard)
+ - Rename extra option enum_is_ord to enum_ordinal_storage (Meredith
+   Howard)
+ - Rename to sym_to_ord and ord_to_sym; move toward better use of terms.
+   (Meredith Howard)
+ - Drop init and bits options as unnecessary, document values hashref
+   option. (Meredith Howard)
+ - Allow ->new on instances (Meredith Howard)
+
+0.001 2015-10-25T02:37:10Z
  - Add empty Changes (Meredith Howard)
  - add stability / feedback note to pod (Meredith Howard)
  - Mention DBIC again (Meredith Howard)
