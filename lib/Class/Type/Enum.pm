@@ -83,7 +83,7 @@ use overload (
 );
 
 
-=method $class->import(values => [], ...)
+=method $class->import(values => ...)
 
 Sets up the consuming class as a subclass of Class::Type::Enum and installs
 functions that are unique to the class.
@@ -102,7 +102,6 @@ fun import ($class, %params) {
 
   if (ref $params{values} eq 'ARRAY') {
     my $i = 0;
-
     %values = map { $_ => $i++ } @{$params{values}};
   }
   elsif (ref $params{values} eq 'HASH') {
@@ -117,11 +116,11 @@ fun import ($class, %params) {
     no strict 'refs';
     push @{"${target}::ISA"}, $class;
   }
-  install_modifier $target, 'fresh', values_ord => sub { \%values };
-  install_modifier $target, 'fresh', ord_values => sub { +{ reverse(%values) } };
+  install_modifier $target, 'fresh', sym_to_ord => sub { \%values };
+  install_modifier $target, 'fresh', ord_to_sym => sub { +{ reverse(%values) } };
 
   install_modifier $target, 'fresh', values => method {
-    my $ord = $self->values_ord;
+    my $ord = $self->sym_to_ord;
     [ sort { $ord->{$a} <=> $ord->{$b} } keys %values ];
   };
 
@@ -151,7 +150,7 @@ L<DBIx::Class::InflateColumn::ClassTypeEnum>.
 
 method inflate_value ($class: $value) {
   bless {
-    ord => $class->values_ord->{$value}
+    ord => $class->sym_to_ord->{$value}
         // die "Value [$value] is not valid for enum $class"
   }, $class;
 }
@@ -166,17 +165,17 @@ ordinals directly.
 
 method inflate ($class: $ord) {
   die "Ordinal $ord is not valid for enum $class"
-    if !exists $class->ord_values->{$ord};
+    if !exists $class->ord_to_sym->{$ord};
   bless { ord => $ord }, $class;
 }
 
-=method $class->values_ord
+=method $class->sym_to_ord
 
-Returns a hashref with symbols as keys and ordinals as values.
+Returns a hashref keyed by symbol, with ordinals as values.
 
-=method $class->ord_values
+=method $class->ord_to_sym
 
-Returns a hashref with ordinals as keys and symbols as values.
+Returns a hashref keyed by ordinal, with symbols as values.
 
 =method $class->values
 
@@ -191,7 +190,7 @@ the enum, or throws an exception.
 
 method get_test ($class:) {
   return fun ($value) {
-    exists($class->values_ord->{$value})
+    exists($class->sym_to_ord->{$value})
       or die "Value [$value] is not valid for enum $class"
   }
 }
@@ -241,7 +240,7 @@ Shortcut for L<$o-E<gt>is($value)>
 =cut
 
 method is ($value) {
-  $self->{ord} == ($self->values_ord->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
+  $self->{ord} == ($self->sym_to_ord->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
 }
 
 
@@ -252,7 +251,7 @@ Returns the symbolic value.
 =cut
 
 method stringify {
-  $self->ord_values->{$self->{ord}};
+  $self->ord_to_sym->{$self->{ord}};
 }
 
 =method $o->numify
