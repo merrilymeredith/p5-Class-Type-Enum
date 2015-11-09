@@ -12,8 +12,12 @@ package Class::Type::Enum;
 
     has status => (
       is     => 'rw',
-      isa    => Toast::Status->get_test,
-      coerce => Toast::Status->get_coerce,
+      coerce => sub {
+        Toast::Status->coerce_symbol(shift)
+      },
+      isa    => sub {
+        $_[0]->isa('Toast::Status') or die "Toast calamity!"
+      },
     );
   }
 
@@ -71,7 +75,7 @@ use strict;
 use warnings;
 
 use Function::Parameters ':strict';
-use List::Util v1.33 ();
+use List::Util v1.33;
 use Scalar::Util qw(blessed);
 use Class::Method::Modifiers qw(install_modifier);
 
