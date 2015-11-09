@@ -49,6 +49,7 @@ The list of symbolic values in your enum, in ascending order if relevant.
 = values => {symbol => ordinal, ...}
 The list of symbols and ordinal values in your enum.  There is no check that a
 given ordinal isn't reused.
+
 =end :list
 
 =head2 Custom Ordinal Values
@@ -138,24 +139,24 @@ enum type.  Also works as an instance method for enums of the same class.
 =cut
 
 method new ($class: $value) {
-  (blessed($class)// $class)->inflate_value($value);
+  (blessed($class)// $class)->inflate_symbol($value);
 }
 
-=method $class->inflate_value($value)
+=method $class->inflate_symbol($symbol)
 
 Does the actual work of L<$class-E<gt>new($value)>, also used when inflating values for
 L<DBIx::Class::InflateColumn::ClassTypeEnum>.
 
 =cut
 
-method inflate_value ($class: $value) {
+method inflate_symbol ($class: $symbol) {
   bless {
-    ord => $class->sym_to_ord->{$value}
-        // die "Value [$value] is not valid for enum $class"
+    ord => $class->sym_to_ord->{$symbol}
+        // die "Value [$symbol] is not valid for enum $class"
   }, $class;
 }
 
-=method $class->inflate($ord)
+=method $class->inflate_ordinal($ord)
 
 Used when inflating ordinal values for
 L<DBIx::Class::InflateColumn::ClassTypeEnum> or if you need to work with
@@ -163,8 +164,8 @@ ordinals directly.
 
 =cut
 
-method inflate ($class: $ord) {
-  die "Ordinal $ord is not valid for enum $class"
+method inflate_ordinal ($class: $ord) {
+  die "Ordinal [$ord] is not valid for enum $class"
     if !exists $class->ord_to_sym->{$ord};
   bless { ord => $ord }, $class;
 }
