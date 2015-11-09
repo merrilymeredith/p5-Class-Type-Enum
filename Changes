@@ -1,4 +1,7 @@
-0.002 2015-11-09T10:15:13
+0.003 2015-11-09T10:25:12
+ - Fix up Moo example (Meredith Howard)
+
+0.002 2015-11-09T10:15:13Z
  - Require List::Util min 1.33 (Meredith Howard)
  - Clarify is() doc (Meredith Howard)
  - Add more interface checks (Meredith Howard)
