@@ -12,19 +12,20 @@ package Vehicle {
 # Just another compile check
 use DBIx::Class::InflateColumn::ClassTypeEnum;
 
+can_ok( 'Critter', qw(
+  new
+  inflate_symbol inflate_ordinal
+  test_symbol    test_ordinal
+  coerce_symbol  coerce_ordinal
+  values
+  sym_to_ord     ord_to_sym
+));
+
 my $cat = new_ok( 'Critter', ['cat'] );
 
 isa_ok( $cat, 'Class::Type::Enum' );
 
 can_ok( $cat, qw( is is_mouse is_cat is_dog ) );
-
-# use Devel::Dwarn;
-# Dwarn {
-#   cat => $cat,
-#   values => $cat->raw_values,
-# };
-#
-# Dwarn \%{Critter::};
 
 ok( $cat->is('cat'), 'cat is a cat.');
 ok( $cat->is_cat, 'cat is a cat!' );
