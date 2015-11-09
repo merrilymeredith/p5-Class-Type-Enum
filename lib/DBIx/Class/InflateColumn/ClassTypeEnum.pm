@@ -44,7 +44,7 @@ subkeys inside the C<extra> key of the column info:
 Required to enable column inflation.  Specify the complete class name that this
 column should be inflated to.  It should already be loaded and must be a
 subclass of L<Class::Type::Enum>.
-= enum_is_ord
+= enum_ordinal_storage
 If true, the column is inflated from and deflated to ordinal values.
 
 =cut
@@ -63,7 +63,7 @@ method register_column ($column, $info) {
   # freeform in DBIC and just match the DB types, so that's a lot of
   # possibilities...
 
-  if ($info->{extra}{enum_is_ord}) {
+  if ($info->{extra}{enum_ordinal_storage}) {
     $self->inflate_column(
       $column => {
         inflate => fun ($ord = undef) {
