@@ -1,3 +1,5 @@
+use warnings;
+use strict;
 use Test::More;
 
 package Critter {
@@ -8,9 +10,6 @@ package Vehicle {
   # Make sure it works more than once
   use Class::Type::Enum values => [qw(bike car bus train plane)];
 }
-
-# Just another compile check
-use DBIx::Class::InflateColumn::ClassTypeEnum;
 
 can_ok( 'Critter', qw(
   new
