@@ -148,7 +148,7 @@ method new ($class: $value) {
 
 =method $class->inflate_symbol($symbol)
 
-Does the actual work of L<$class-E<gt>new($value)>, also used when inflating values for
+Does the actual work of C<$class-E<gt>new($value)>, also used when inflating values for
 L<DBIx::Class::InflateColumn::ClassTypeEnum>.
 
 =cut
@@ -258,7 +258,7 @@ An exception is thrown if an invalid symbol is provided
 
 =method $o->is_$value
 
-Shortcut for L<$o-E<gt>is($value)>
+Shortcut for C<$o-E<gt>is($value)>
 
 =cut
 
