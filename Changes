@@ -1,4 +1,10 @@
-0.003 2015-11-09T10:25:12
+0.004 2015-12-22T00:24:03
+ - Some testers seem confused about minimum version using `v1.33` (Meredith
+   Howard)
+ - Add test for case sorta like the synopsis (Meredith Howard)
+ - Add 00-load-all (Meredith Howard)
+
+0.003 2015-11-09T10:25:12Z
  - Fix up Moo example (Meredith Howard)
 
 0.002 2015-11-09T10:15:13Z
