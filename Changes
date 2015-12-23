@@ -1,4 +1,8 @@
-0.004 2015-12-22T00:24:03
+0.005 2015-12-23T08:51:56
+ - - Fixed broken link in the pod of package Class::Type::Enum. (Mohammad S
+   Anwar)
+
+0.004 2015-12-22T00:24:03Z
  - Some testers seem confused about minimum version using `v1.33` (Meredith
    Howard)
  - Add test for case sorta like the synopsis (Meredith Howard)
