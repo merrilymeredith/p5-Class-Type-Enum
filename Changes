@@ -1,5 +1,8 @@
-0.005 2015-12-23T08:51:56
- - - Fixed broken link in the pod of package Class::Type::Enum. (Mohammad S
+0.006 2016-03-06T07:46:43
+ - Fix DBIC inflation. (Meredith Howard)
+
+0.005 2015-12-23T08:51:56Z
+ - Fixed broken link in the pod of package Class::Type::Enum. (Mohammad S
    Anwar)
 
 0.004 2015-12-22T00:24:03Z
