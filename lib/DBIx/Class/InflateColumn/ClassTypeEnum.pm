@@ -68,7 +68,7 @@ method register_column ($column, $info) {
       $column => {
         inflate => fun ($ord = undef) {
           return unless defined $ord;
-          $class->inflate($ord);
+          $class->inflate_ordinal($ord);
         },
         deflate => fun ($enum = undef) {
           return unless defined $enum;
@@ -83,7 +83,7 @@ method register_column ($column, $info) {
       $column => {
         inflate => fun ($val = undef) {
           return unless defined $val;
-          $class->inflate_value($val);
+          $class->inflate_symbol($val);
         },
         deflate => fun ($enum = undef) {
           return unless defined $enum;
