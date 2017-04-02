@@ -36,10 +36,12 @@ my @plate    = grep { $_->status->is_toast } @toast;
  
 my $ready_status   = Toast::Status->new('toast');
 my @eventual_toast = grep { $_->status < $ready_status } @toast;
+my @eventual_toast_cmp = grep { $_->status lt 'toast' } @toast;
 
 is( scalar(@trashcan), 1, "Found one burnt toast" );
 is( scalar(@plate),    2, "Found two actual toast" );
-is( scalar(@eventual_toast), 3, "And three on the way" );
+is( scalar(@eventual_toast),     3, "And three on the way" );
+is( scalar(@eventual_toast_cmp), 3, "Even with string compare" );
 
 
 done_testing;

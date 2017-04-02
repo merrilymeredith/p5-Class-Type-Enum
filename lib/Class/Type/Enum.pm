@@ -31,6 +31,10 @@ package Class::Type::Enum;
 
   # or:
 
+  @eventual_toast = grep { $_->status lt 'toast' } @toast;
+
+  # or:
+
   @eventual_toast = grep { $_->status->none('toast', 'burnt') } @toast;
 
 =head1 DESCRIPTION
@@ -83,6 +87,7 @@ use namespace::clean;
 
 use overload (
   '""'     => 'stringify',
+  'cmp'    => 'cmp',
   '0+'     => 'numify',
   fallback => 1,
 );
@@ -287,6 +292,22 @@ method numify ($, $) {
   $self->{ord}
 }
 
+=method $o->cmp($other, $reversed = undef)
+
+The string-compare implementation used by overloading.  Returns the same values
+as C<cmp>.  The optional third argument is an artifact of L<overload>, set to
+true if the order of C<$o> and C<$other> have been reversed in order to make
+the overloaded method call work.
+
+=cut
+
+method cmp ($other, $reversed = undef) {
+  return -1 * $self->cmp($other) if $reversed;
+
+  $self <=> (ref $other
+    ? $other
+    : $self->sym_to_ord->{$other} // die "Cannot compare to unenumerated symbol [$other]")
+}
 
 =method $o->any(@cases)
 

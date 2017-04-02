@@ -38,6 +38,7 @@ ok( $cat == Critter->new("$cat"), 'no matter where they come from' );
 
 ok( $cat > Critter->new('dog'), '...and more equal than dogs' );
 ok( Critter->new('mouse') < $cat, 'these fierce predators' );
+ok( Critter->new('mouse') lt $cat, 'no matter how you look at it' );
 
 # Dwarn [ sort {$a <=> $b} map { Critter->new($_) } @{Critter->values} ];
 
@@ -46,7 +47,7 @@ ok( $cat->none(qw(dog mouse)), 'but we must keep standards' );
 
 ok( my $dog = $cat->new('dog'), 'okay okay, made a dog' );
 cmp_ok( $dog, '!=', $cat, "they're just so different!" );
-
+ok( 'cat' gt $dog, 'cats are still on top though' );
 
 subtest 'test methods for type checks' => sub {
   ok( Critter->test_symbol('rabbit'), 'rabbit ok' );
