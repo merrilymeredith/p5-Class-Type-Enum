@@ -31,7 +31,7 @@ inflate/deflate to symbols (strings) or ordinals (integers).
 use warnings;
 use strict;
 
-use Function::Parameters;
+use Function::Parameters 2;
 use Carp ();
 
 =method register_column($column, $info)

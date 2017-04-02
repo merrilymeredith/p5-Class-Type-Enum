@@ -74,7 +74,7 @@ setup, you need only pass a more explicit hashref to Class::Type::Enum.
 use strict;
 use warnings;
 
-use Function::Parameters ':strict';
+use Function::Parameters 2;
 use List::Util 1.33;
 use Scalar::Util qw(blessed);
 use Class::Method::Modifiers qw(install_modifier);
@@ -95,7 +95,7 @@ functions that are unique to the class.
 
 =cut
 
-fun import ($class, %params) {
+method import ($class: %params) {
   # import is inherited, but we don't want to do all this to everything that
   # uses a subclass of Class::Type::Enum.
   return unless $class eq __PACKAGE__;
@@ -124,13 +124,13 @@ fun import ($class, %params) {
   install_modifier $target, 'fresh', sym_to_ord => sub { \%values };
   install_modifier $target, 'fresh', ord_to_sym => sub { +{ reverse(%values) } };
 
-  install_modifier $target, 'fresh', values => method {
+  install_modifier $target, 'fresh', values => method () {
     my $ord = $self->sym_to_ord;
     [ sort { $ord->{$a} <=> $ord->{$b} } keys %values ];
   };
 
   for my $value (keys %values) {
-    install_modifier $target, 'fresh', "is_$value" => method { $self->is($value) };
+    install_modifier $target, 'fresh', "is_$value" => method () { $self->is($value) };
   }
 }
 
@@ -273,7 +273,7 @@ Returns the symbolic value.
 
 =cut
 
-method stringify {
+method stringify ($, $) {
   $self->ord_to_sym->{$self->{ord}};
 }
 
@@ -283,7 +283,7 @@ Returns the ordinal value.
 
 =cut
 
-method numify {
+method numify ($, $) {
   $self->{ord}
 }
 
