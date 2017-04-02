@@ -78,10 +78,11 @@ setup, you need only pass a more explicit hashref to Class::Type::Enum.
 use strict;
 use warnings;
 
+use Carp qw(croak);
+use Class::Method::Modifiers qw(install_modifier);
 use Function::Parameters 2;
 use List::Util 1.33;
 use Scalar::Util qw(blessed);
-use Class::Method::Modifiers qw(install_modifier);
 
 use namespace::clean;
 
@@ -118,7 +119,7 @@ method import ($class: %params) {
     %values = %{$params{values}};
   }
   else {
-    die "Enum values must be provided either as an array or hash ref.";
+    croak "Enum values must be provided either as an array or hash ref.";
   }
 
   ## the bits that are installed into the target class, plus @ISA
@@ -161,7 +162,7 @@ L<DBIx::Class::InflateColumn::ClassTypeEnum>.
 method inflate_symbol ($class: $symbol) {
   bless {
     ord => $class->sym_to_ord->{$symbol}
-        // die "Value [$symbol] is not valid for enum $class"
+        // croak "Value [$symbol] is not valid for enum $class"
   }, $class;
 }
 
@@ -174,7 +175,7 @@ ordinals directly.
 =cut
 
 method inflate_ordinal ($class: $ord) {
-  die "Ordinal [$ord] is not valid for enum $class"
+  croak "Ordinal [$ord] is not valid for enum $class"
     if !exists $class->ord_to_sym->{$ord};
   bless { ord => $ord }, $class;
 }
@@ -251,7 +252,7 @@ method coerce_any ($class: $value) {
     my $enum = eval { $class->$method($value) };
     return $enum if $enum;
   }
-  die "Could not coerce invalid value [$value] into $class";
+  croak "Could not coerce invalid value [$value] into $class";
 }
 
 
@@ -268,7 +269,7 @@ Shortcut for C<$o-E<gt>is($value)>
 =cut
 
 method is ($value) {
-  $self->{ord} == ($self->sym_to_ord->{$value} // die "Value [$value] is not valid for enum ". blessed($self))
+  $self->{ord} == ($self->sym_to_ord->{$value} // croak "Value [$value] is not valid for enum ". blessed($self))
 }
 
 
@@ -306,7 +307,7 @@ method cmp ($other, $reversed = undef) {
 
   $self <=> (ref $other
     ? $other
-    : $self->sym_to_ord->{$other} // die "Cannot compare to unenumerated symbol [$other]")
+    : $self->sym_to_ord->{$other} // croak "Cannot compare to invalid symbol [$other] for " . blessed($self))
 }
 
 =method $o->any(@cases)
