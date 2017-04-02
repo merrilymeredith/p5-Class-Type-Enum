@@ -1,4 +1,9 @@
-0.008 2017-04-02T03:26:26
+0.009 2017-04-02T19:23:37
+ - Switch to croaks so entry points are more apparent (Meredith Howard)
+ - Make string comparison work in terms of the enumeration (Meredith
+   Howard)
+
+0.008 2017-04-02T03:26:26Z
  - Fix inflate/deflate under strict arg checks (Meredith Howard)
  - Use metacpan url on github (Meredith Howard)
 
