@@ -66,11 +66,11 @@ method register_column ($column, $info) {
   if ($info->{extra}{enum_ordinal_storage}) {
     $self->inflate_column(
       $column => {
-        inflate => fun ($ord = undef) {
+        inflate => fun ($ord = undef, @) {
           return unless defined $ord;
           $class->inflate_ordinal($ord);
         },
-        deflate => fun ($enum = undef) {
+        deflate => fun ($enum = undef, @) {
           return unless defined $enum;
           $enum->numify;
         },
@@ -81,11 +81,11 @@ method register_column ($column, $info) {
   else {
     $self->inflate_column(
       $column => {
-        inflate => fun ($val = undef) {
+        inflate => fun ($val = undef, @) {
           return unless defined $val;
           $class->inflate_symbol($val);
         },
-        deflate => fun ($enum = undef) {
+        deflate => fun ($enum = undef, @) {
           return unless defined $enum;
           $enum->stringify;
         },
