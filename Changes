@@ -1,4 +1,8 @@
-0.007 2017-04-02T01:55:08
+0.008 2017-04-02T03:26:26
+ - Fix inflate/deflate under strict arg checks (Meredith Howard)
+ - Use metacpan url on github (Meredith Howard)
+
+0.007 2017-04-02T01:55:08Z
  - Update for Function::Parameters 2 (Meredith Howard)
 
 0.006 2016-03-06T07:46:43Z
