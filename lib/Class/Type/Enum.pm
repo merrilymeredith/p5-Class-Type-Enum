@@ -170,7 +170,7 @@ sub inflate_symbol {
   croak "Value [$symbol] is not valid for enum $class"
     unless defined $ord;
 
-  bless {ord => $ord}, $class;
+  bless \$ord, $class;
 }
 
 =method $class->inflate_ordinal($ord)
@@ -187,7 +187,7 @@ sub inflate_ordinal {
   croak "Ordinal [$ord] is not valid for enum $class"
     unless exists $class->ord_to_sym->{$ord};
 
-  bless {ord => $ord}, $class;
+  bless \$ord, $class;
 }
 
 =method $class->sym_to_ord
@@ -292,7 +292,7 @@ sub is {
   croak "Value [$value] is not valid for enum " . blessed($self)
     unless defined $ord;
 
-  $self->{ord} == $ord;
+  $$self == $ord;
 }
 
 
@@ -304,7 +304,7 @@ Returns the symbolic value.
 
 sub stringify {
   my ($self) = @_;
-  $self->ord_to_sym->{$self->{ord}};
+  $self->ord_to_sym->{$$self};
 }
 
 =method $o->numify
@@ -315,7 +315,7 @@ Returns the ordinal value.
 
 sub numify {
   my ($self) = @_;
-  $self->{ord};
+  $$self;
 }
 
 =method $o->cmp($other, $reversed = undef)
@@ -331,13 +331,13 @@ sub cmp {
   my ($self, $other, $reversed) = @_;
   return -1 * $self->cmp($other) if $reversed;
 
-  return $self <=> $other if blessed($other);
+  return $$self <=> $other if blessed($other);
 
   my $ord = $self->sym_to_ord->{$other};
   croak "Cannot compare to invalid symbol [$other] for " . blessed($self)
     unless defined $ord;
 
-  return $self <=> $ord;
+  return $$self <=> $ord;
 }
 
 =method $o->any(@cases)
