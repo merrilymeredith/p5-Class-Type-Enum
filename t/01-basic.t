@@ -20,13 +20,18 @@ can_ok( 'Critter', qw(
   coerce_symbol  coerce_ordinal
   values
   sym_to_ord     ord_to_sym
+  list_is_methods
 ));
+
+ok( (my @is_methods = Critter->list_is_methods), 'can list_is_methods' );
+is( scalar(@is_methods), 4, 'is_methods looks good' );
 
 my $cat = new_ok( 'Critter', ['cat'] );
 
 isa_ok( $cat, 'Class::Type::Enum' );
 
-can_ok( $cat, qw( is is_mouse is_cat is_dog ) );
+can_ok( $cat, qw( is is_mouse is_cat is_dog is_rabbit ) );
+
 
 ok( $cat->is('cat'), 'cat is a cat.');
 ok( $cat->is_cat, 'cat is a cat!' );

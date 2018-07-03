@@ -18,13 +18,14 @@ package Class::Type::Enum;
       isa    => sub {
         $_[0]->isa('Toast::Status') or die "Toast calamity!"
       },
+      handles => [ Toast::Status->list_is_methods ],
     );
   }
 
   my @toast = map { Toast->new(status => $_) } qw( toast burnt bread bread toasting toast );
 
-  my @trashcan = grep { $_->status->is_burnt } @toast;
-  my @plate    = grep { $_->status->is_toast } @toast;
+  my @trashcan = grep { $_->is_burnt } @toast;
+  my @plate    = grep { $_->is_toast } @toast;
 
   my $ready_status   = Toast::Status->new('toast');
   my @eventual_toast = grep { $_->status < $ready_status } @toast;
@@ -201,6 +202,18 @@ Returns a hashref keyed by ordinal, with symbols as values.
 =method $class->values
 
 Returns an arrayref of valid symbolic values, in order.
+
+=method $class->list_is_methods
+
+Returns a list of C<is_> methods defined for each symbolic value for the class.
+
+=cut
+
+sub list_is_methods {
+  my ($class) = @_;
+
+  map "is_$_", @{$class->values};
+}
 
 =method $class->test_symbol($value)
 

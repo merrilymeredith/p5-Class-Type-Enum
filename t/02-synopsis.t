@@ -28,13 +28,14 @@ BEGIN {
     isa      => sub {
       $_[0]->isa('Toast::Status') or die "Toast calamity!"
     },
+    handles => [ Toast::Status->list_is_methods ],
   );
 }
  
 my @toast = map { Toast->new(status => $_) } qw( toast burnt bread bread toasting toast );
  
-my @trashcan = grep { $_->status->is_burnt } @toast;
-my @plate    = grep { $_->status->is_toast } @toast;
+my @trashcan = grep { $_->is_burnt } @toast;
+my @plate    = grep { $_->is_toast } @toast;
  
 my $ready_status   = Toast::Status->new('toast');
 my @eventual_toast = grep { $_->status < $ready_status } @toast;
