@@ -80,7 +80,6 @@ use warnings;
 
 use Carp qw(croak);
 use Class::Method::Modifiers qw(install_modifier);
-use Function::Parameters 2;
 use List::Util 1.33;
 use Scalar::Util qw(blessed);
 
@@ -101,7 +100,9 @@ functions that are unique to the class.
 
 =cut
 
-method import ($class: %params) {
+sub import {
+  my ($class, %params) = @_;
+
   # import is inherited, but we don't want to do all this to everything that
   # uses a subclass of Class::Type::Enum.
   return unless $class eq __PACKAGE__;
@@ -130,13 +131,13 @@ method import ($class: %params) {
   install_modifier $target, 'fresh', sym_to_ord => sub { \%values };
   install_modifier $target, 'fresh', ord_to_sym => sub { +{ reverse(%values) } };
 
-  install_modifier $target, 'fresh', values => method () {
-    my $ord = $self->sym_to_ord;
+  install_modifier $target, 'fresh', values => sub {
+    my $ord = $_[0]->sym_to_ord;
     [ sort { $ord->{$a} <=> $ord->{$b} } keys %values ];
   };
 
   for my $value (keys %values) {
-    install_modifier $target, 'fresh', "is_$value" => method () { $self->is($value) };
+    install_modifier $target, 'fresh', "is_$value" => sub { $_[0]->is($value) };
   }
 }
 
@@ -148,8 +149,10 @@ enum type.  Also works as an instance method for enums of the same class.
 
 =cut
 
-method new ($class: $value) {
-  (blessed($class)// $class)->inflate_symbol($value);
+sub new {
+  my ($class, $value) = @_;
+
+  (blessed($class) || $class)->inflate_symbol($value);
 }
 
 =method $class->inflate_symbol($symbol)
@@ -159,11 +162,15 @@ L<DBIx::Class::InflateColumn::ClassTypeEnum>.
 
 =cut
 
-method inflate_symbol ($class: $symbol) {
-  bless {
-    ord => $class->sym_to_ord->{$symbol}
-        // croak "Value [$symbol] is not valid for enum $class"
-  }, $class;
+sub inflate_symbol {
+  my ($class, $symbol) = @_;
+
+  my $ord = $class->sym_to_ord->{$symbol};
+
+  croak "Value [$symbol] is not valid for enum $class"
+    unless defined $ord;
+
+  bless {ord => $ord}, $class;
 }
 
 =method $class->inflate_ordinal($ord)
@@ -174,10 +181,13 @@ ordinals directly.
 
 =cut
 
-method inflate_ordinal ($class: $ord) {
+sub inflate_ordinal {
+  my ($class, $ord) = @_;
+
   croak "Ordinal [$ord] is not valid for enum $class"
-    if !exists $class->ord_to_sym->{$ord};
-  bless { ord => $ord }, $class;
+    unless exists $class->ord_to_sym->{$ord};
+
+  bless {ord => $ord}, $class;
 }
 
 =method $class->sym_to_ord
@@ -198,7 +208,9 @@ Test whether or not the given value is a valid symbol in this enum class.
 
 =cut
 
-method test_symbol ($class: $value) {
+sub test_symbol {
+  my ($class, $value) = @_;
+
   exists($class->sym_to_ord->{$value})
 }
 
@@ -208,7 +220,9 @@ Test whether or not the given value is a valid ordinal in this enum class.
 
 =cut
 
-method test_ordinal ($class: $value) {
+sub test_ordinal {
+  my ($class, $value) = @_;
+
   exists($class->ord_to_sym->{$value})
 }
 
@@ -219,7 +233,8 @@ as a symbol.  Dies on invalid value.
 
 =cut
 
-method coerce_symbol ($class: $value) {
+sub coerce_symbol {
+  my ($class, $value) = @_;
   return $value if eval { $value->isa($class) };
 
   $class->inflate_symbol($value);
@@ -232,7 +247,8 @@ as an ordinal.  Dies on invalid value.
 
 =cut
 
-method coerce_ordinal ($class: $value) {
+sub coerce_ordinal {
+  my ($class, $value) = @_;
   return $value if eval { $value->isa($class) };
 
   $class->inflate_ordinal($value);
@@ -245,7 +261,8 @@ first as an ordinal, then as a symbol.  Dies on invalid value.
 
 =cut
 
-method coerce_any ($class: $value) {
+sub coerce_any {
+  my ($class, $value) = @_;
   return $value if eval { $value->isa($class) };
 
   for my $method (qw( inflate_ordinal inflate_symbol )) {
@@ -268,8 +285,14 @@ Shortcut for C<$o-E<gt>is($value)>
 
 =cut
 
-method is ($value) {
-  $self->{ord} == ($self->sym_to_ord->{$value} // croak "Value [$value] is not valid for enum ". blessed($self))
+sub is {
+  my ($self, $value) = @_;
+  my $ord = $self->sym_to_ord->{$value};
+
+  croak "Value [$value] is not valid for enum " . blessed($self)
+    unless defined $ord;
+
+  $self->{ord} == $ord;
 }
 
 
@@ -279,7 +302,8 @@ Returns the symbolic value.
 
 =cut
 
-method stringify ($, $) {
+sub stringify {
+  my ($self) = @_;
   $self->ord_to_sym->{$self->{ord}};
 }
 
@@ -289,8 +313,9 @@ Returns the ordinal value.
 
 =cut
 
-method numify ($, $) {
-  $self->{ord}
+sub numify {
+  my ($self) = @_;
+  $self->{ord};
 }
 
 =method $o->cmp($other, $reversed = undef)
@@ -302,12 +327,17 @@ the overloaded method call work.
 
 =cut
 
-method cmp ($other, $reversed = undef) {
+sub cmp {
+  my ($self, $other, $reversed) = @_;
   return -1 * $self->cmp($other) if $reversed;
 
-  $self <=> (ref $other
-    ? $other
-    : $self->sym_to_ord->{$other} // croak "Cannot compare to invalid symbol [$other] for " . blessed($self))
+  return $self <=> $other if blessed($other);
+
+  my $ord = $self->sym_to_ord->{$other};
+  croak "Cannot compare to invalid symbol [$other] for " . blessed($self)
+    unless defined $ord;
+
+  return $self <=> $ord;
 }
 
 =method $o->any(@cases)
@@ -316,7 +346,9 @@ True if C<$o-E<gt>is(..)> for any of the given cases.
 
 =cut
 
-method any (@cases) {
+sub any {
+  my ($self, @cases) = @_;
+
   List::Util::any { $self->is($_) } @cases;
 }
 
@@ -326,7 +358,9 @@ True if C<$o-E<gt>is(..)> for none of the given cases.
 
 =cut
 
-method none (@cases) {
+sub none {
+  my ($self, @cases) = @_;
+
   List::Util::none { $self->is($_) } @cases;
 }
 

@@ -7,11 +7,13 @@ BEGIN {
   plan skip_all => "Synopsis test requires Moo" if $@;
 };
 
-package Toast::Status {
+{
+  package Toast::Status;
   use Class::Type::Enum values => ['bread', 'toasting', 'toast', 'burnt'];
 }
  
-package Toast {
+{
+  package Toast;
   # Don't let this show up as a dependency:
   BEGIN { 
     Moo->import();

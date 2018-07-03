@@ -2,11 +2,13 @@ use warnings;
 use strict;
 use Test::More;
 
-package Critter {
+{
+  package Critter;
   use Class::Type::Enum values => [qw( mouse rabbit dog cat )];
 }
 
-package Vehicle {
+{
+  package Vehicle;
   # Make sure it works more than once
   use Class::Type::Enum values => [qw(bike car bus train plane)];
 }
@@ -81,7 +83,8 @@ subtest 'coerce methods' => sub {
 };
 
 ok( eval {
-  package Dummy { Critter->import(); }
+  package Dummy;
+  Critter->import();
   1;
 }, 'Class::Type::Enum skips import when subclasses are used, or this would die.');
 
