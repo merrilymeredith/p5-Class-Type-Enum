@@ -11,13 +11,9 @@ package Class::Type::Enum;
     use Moo;
 
     has status => (
-      is     => 'rw',
-      coerce => sub {
-        Toast::Status->coerce_symbol(shift)
-      },
-      isa    => sub {
-        $_[0]->isa('Toast::Status') or die "Toast calamity!"
-      },
+      is      => 'rw',
+      isa     => Toast::Status->type_constraint,
+      coerce  => 1,
       handles => [ Toast::Status->list_is_methods ],
     );
   }
@@ -213,6 +209,23 @@ sub list_is_methods {
   my ($class) = @_;
 
   map "is_$_", @{$class->values};
+}
+
+=method $class->type_constraint
+
+This method requires the optional dependency L<Type::Tiny>.
+
+Returns a type constraint suitable for use with L<Moo> and friends.
+
+=cut
+
+sub type_constraint {
+  my ($class) = @_;
+
+  require Type::Tiny::Class;
+  require Types::Standard;
+  Type::Tiny::Class->new(class => blessed($class) || $class)
+    ->plus_constructors(Types::Standard::Str(), 'inflate_symbol');
 }
 
 =method $class->test_symbol($value)

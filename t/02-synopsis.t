@@ -3,8 +3,8 @@ use strict;
 use Test::More;
 
 BEGIN {
-  eval "require Moo";
-  plan skip_all => "Synopsis test requires Moo" if $@;
+  eval "require Moo; require Type::Tiny;";
+  plan skip_all => "Synopsis test requires Moo and Type::Tiny" if $@;
 };
 
 {
@@ -22,12 +22,8 @@ BEGIN {
   has status => (
     is       => 'rw',
     required => 1,
-    coerce   => sub {
-      Toast::Status->coerce_symbol(shift)
-    },
-    isa      => sub {
-      $_[0]->isa('Toast::Status') or die "Toast calamity!"
-    },
+    isa      => Toast::Status->type_constraint,
+    coerce   => 1,
     handles => [ Toast::Status->list_is_methods ],
   );
 }
@@ -46,5 +42,7 @@ is( scalar(@plate),    2, "Found two actual toast" );
 is( scalar(@eventual_toast),     3, "And three on the way" );
 is( scalar(@eventual_toast_cmp), 3, "Even with string compare" );
 
+eval { Toast->new(status => 'ack') };
+ok( index($@, 'Value [ack] is not valid') > 0, 'Type constraint works' );
 
 done_testing;

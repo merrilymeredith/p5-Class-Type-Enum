@@ -16,6 +16,7 @@ use Test::More;
 can_ok( 'Critter', qw(
   new
   inflate_symbol inflate_ordinal
+  type_constraint
   test_symbol    test_ordinal
   coerce_symbol  coerce_ordinal
   values
