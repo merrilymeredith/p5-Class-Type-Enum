@@ -1,4 +1,7 @@
-0.010 2018-07-03T03:58:32
+0.011 2018-07-04T02:15:46
+ - Fix up prereqs (Meredith Howard)
+
+0.010 2018-07-03T03:58:32Z
  - Add type_constraint - Resolves #5 (Thanks TOBYINK!) (Meredith Howard)
  - Add list_is_methods - Resolves #4 (Thanks TOBYINK!) (Meredith Howard)
  - Do away with hashref representation (Meredith Howard)
