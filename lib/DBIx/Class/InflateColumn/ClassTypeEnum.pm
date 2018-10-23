@@ -51,7 +51,7 @@ If true, the column is inflated from and deflated to ordinal values.
 
 sub register_column {
   my ($self, $column, $info) = @_;
-  $self->next::method(@_);
+  $self->next::method($column, $info);
 
   return unless $info->{extra} and my $class = $info->{extra}{enum_class};
 
