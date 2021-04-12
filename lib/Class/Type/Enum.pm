@@ -86,6 +86,8 @@ use overload (
   '""'     => 'stringify',
   'cmp'    => 'cmp',
   '0+'     => 'numify',
+  '++'     => 'incr',
+  '--'     => 'decr',
   fallback => 1,
 );
 
@@ -364,6 +366,28 @@ sub cmp {
     unless defined $ord;
 
   return $$self <=> $ord;
+}
+
+=method $o->incr
+
+The increment method used for the increment operator (C<++>, prefix or
+suffix). Mutates the object, incrementing its value by one.
+
+=cut
+
+sub incr {
+  ++${$_[0]};
+}
+
+=method $o->decr
+
+The decrement method used for the decrement operator (C<-->, prefix or
+suffix). Mutates the object, decrementing its value by one.
+
+=cut
+
+sub decr {
+  --${$_[0]};
 }
 
 =method $o->any(@cases)
